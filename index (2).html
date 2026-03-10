@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopEx Admin</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="admin-login-page" class="login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <h1>⚡ ShopEx</h1>
+      <p>Admin Dashboard</p>
+    </div>
+
+    <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:0.82rem;color:#0369a1">
+      <strong>Demo Admin:</strong> admin@shopex.com / admin123
+    </div>
+
+    <form id="admin-login-form">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="admin-email" placeholder="admin@shopex.com" value="admin@shopex.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="admin-password" placeholder="••••••••" value="admin123" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:12px">
+        Sign In to Admin →
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:20px;font-size:0.82rem;color:var(--text-3)">
+      <a href="../index.html" style="color:var(--primary)">← Back to Store</a>
+    </p>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="admin-app" class="admin-app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="logo-icon">⚡</div>
+        <div>
+          ShopEx
+          <span>Admin Panel</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <button class="sidebar-link" data-section="dashboard" onclick="location.hash='#admin-dashboard'">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button class="sidebar-link" data-section="products" onclick="location.hash='#admin-products'">
+        <span class="nav-icon">📦</span> Products
+      </button>
+      <button class="sidebar-link" data-section="categories" onclick="location.hash='#admin-categories'">
+        <span class="nav-icon">🏷️</span> Categories
+      </button>
+
+      <div class="nav-section-label">Operations</div>
+      <button class="sidebar-link" data-section="orders" onclick="location.hash='#admin-orders'">
+        <span class="nav-icon">🛒</span> Orders
+        <span class="nav-badge" id="pending-count">0</span>
+      </button>
+      <button class="sidebar-link" data-section="users" onclick="location.hash='#admin-users'">
+        <span class="nav-icon">👥</span> Users
+      </button>
+
+      <div class="nav-section-label">System</div>
+      <button class="sidebar-link" data-section="settings" onclick="location.hash='#admin-settings'">
+        <span class="nav-icon">⚙️</span> Settings
+      </button>
+      <button class="sidebar-link" onclick="window.open('../index.html','_blank')">
+        <span class="nav-icon">🛍️</span> View Store
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-user-avatar">A</div>
+        <div class="user-info">
+          <strong id="sidebar-user-name">Admin</strong>
+          <small>Administrator</small>
+        </div>
+      </div>
+      <button class="sidebar-link" onclick="Admin.logout()" style="color:rgba(255,255,255,0.4)">
+        <span class="nav-icon">🚪</span> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- TOP BAR -->
+    <div class="admin-topbar">
+      <div style="display:flex;align-items:center;gap:16px">
+        <span style="font-size:1.1rem;font-weight:800" id="topbar-title">Dashboard</span>
+      </div>
+      <div class="topbar-actions">
+        <div class="topbar-search">
+          🔍 <input type="text" placeholder="Quick search…">
+        </div>
+        <a href="../index.html" class="btn btn-ghost btn-sm">← Store</a>
+        <button class="btn btn-danger btn-sm" onclick="Admin.logout()">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- ==================== DASHBOARD ==================== -->
+      <div class="admin-section" id="section-dashboard">
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-label">Total Revenue</div>
+              <div class="stat-value" id="stat-revenue">$0</div>
+              <div class="stat-change up">↑ 12.5% this month</div>
+            </div>
+            <div class="stat-icon purple">💰</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-label">Total Orders</div>
+              <div class="stat-value" id="stat-orders">0</div>
+              <div class="stat-change up">↑ 8.2% this month</div>
+            </div>
+            <div class="stat-icon green">🛒</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-label">Products</div>
+              <div class="stat-value" id="stat-products">0</div>
+              <div class="stat-change up">↑ 3 new this week</div>
+            </div>
+            <div class="stat-icon amber">📦</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-label">Customers</div>
+              <div class="stat-value" id="stat-customers">0</div>
+              <div class="stat-change up">↑ 15.4% this month</div>
+            </div>
+            <div class="stat-icon blue">👥</div>
+          </div>
+        </div>
+
+        <!-- Charts & Summary -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Monthly Sales</span>
+              <span class="badge badge-success">Last 6 months</span>
+            </div>
+            <div class="chart-bars" id="sales-chart">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Order Status</span>
+            </div>
+            <div id="status-breakdown"><!-- Injected --></div>
+          </div>
+        </div>
+
+        <!-- Recent Orders & Top Products -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Recent Orders</span>
+              <button class="btn btn-ghost btn-sm" onclick="location.hash='#admin-orders'">View All</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr>
+              </thead>
+              <tbody id="recent-orders-table"><!-- Injected --></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Top Products</span>
+              <button class="btn btn-ghost btn-sm" onclick="location.hash='#admin-products'">View All</button>
+            </div>
+            <div id="top-products-list"><!-- Injected --></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PRODUCTS ==================== -->
+      <div class="admin-section" id="section-products" style="display:none">
+        <div class="page-heading">
+          <h2>Products</h2>
+          <div class="page-heading-actions">
+            <div class="search-bar">
+              🔍 <input type="text" id="products-search" placeholder="Search products…">
+            </div>
+            <select id="products-cat-filter" class="btn btn-ghost btn-sm">
+              <option>All Categories</option>
+            </select>
+            <button class="btn btn-primary" id="add-product-btn">+ Add Product</button>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="data-table">
+            <thead>
+              <tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Rating</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="products-table-body">
+              <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">⏳</div><h4>Loading…</h4></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== CATEGORIES ==================== -->
+      <div class="admin-section" id="section-categories" style="display:none">
+        <div class="page-heading">
+          <h2>Categories</h2>
+          <button class="btn btn-primary" id="add-cat-btn">+ Add Category</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="data-table">
+            <thead>
+              <tr><th>Icon</th><th>Name / Slug</th><th>Description</th><th>Products</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="categories-table-body"><!-- Injected --></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== ORDERS ==================== -->
+      <div class="admin-section" id="section-orders" style="display:none">
+        <div class="page-heading">
+          <h2>Orders</h2>
+          <div class="page-heading-actions">
+            <div class="search-bar">
+              🔍 <input type="text" id="orders-search" placeholder="Search orders…">
+            </div>
+            <select id="orders-status-filter" class="btn btn-ghost btn-sm">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="data-table">
+            <thead>
+              <tr><th>Order #</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="orders-table-body"><!-- Injected --></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== USERS ==================== -->
+      <div class="admin-section" id="section-users" style="display:none">
+        <div class="page-heading">
+          <h2>Users</h2>
+          <div class="page-heading-actions">
+            <div class="search-bar">
+              🔍 <input type="text" id="users-search" placeholder="Search users…">
+            </div>
+            <button class="btn btn-primary" id="add-user-btn">+ Add User</button>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="data-table">
+            <thead>
+              <tr><th>User</th><th>Role</th><th>Orders</th><th>Total Spent</th><th>Joined</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="users-table-body"><!-- Injected --></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== SETTINGS ==================== -->
+      <div class="admin-section" id="section-settings" style="display:none">
+        <div class="page-heading"><h2>Settings</h2></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Store Settings</span></div>
+            <div class="form-group"><label>Store Name</label><input type="text" value="ShopEx"></div>
+            <div class="form-group"><label>Store Email</label><input type="email" value="hello@shopex.com"></div>
+            <div class="form-group"><label>Currency</label><select><option>USD ($)</option><option>EUR (€)</option><option>GBP (£)</option></select></div>
+            <div class="form-group"><label>Tax Rate (%)</label><input type="number" value="8"></div>
+            <button class="btn btn-primary" onclick="Admin.toast('Settings saved!','success')">Save Settings</button>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Notifications</span></div>
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-weight:600;font-size:0.875rem">New Orders</div><div style="font-size:0.78rem;color:var(--text-3)">Get notified on new orders</div></div>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-weight:600;font-size:0.875rem">Low Stock Alerts</div><div style="font-size:0.78rem;color:var(--text-3)">When stock falls below 5</div></div>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-weight:600;font-size:0.875rem">Customer Reviews</div><div style="font-size:0.78rem;color:var(--text-3)">New review notifications</div></div>
+                <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div><div style="font-weight:600;font-size:0.875rem">Newsletter Subscriptions</div><div style="font-size:0.78rem;color:var(--text-3)">New newsletter sign-ups</div></div>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Data Management</span></div>
+            <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:16px">Manage store data and reset options.</p>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <button class="btn btn-ghost" onclick="Admin.toast('Data exported!','success')">📥 Export Products CSV</button>
+              <button class="btn btn-ghost" onclick="Admin.toast('Report generated!','success')">📊 Generate Sales Report</button>
+              <button class="btn btn-danger" onclick="if(confirm('Reset all data to defaults?')){localStorage.removeItem('db_initialized');location.reload();}">⚠️ Reset to Demo Data</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Admin Account</span></div>
+            <div class="form-group"><label>Display Name</label><input type="text" value="Admin User"></div>
+            <div class="form-group"><label>Email</label><input type="email" value="admin@shopex.com"></div>
+            <div class="form-group"><label>New Password</label><input type="password" placeholder="Leave blank to keep current"></div>
+            <button class="btn btn-primary" onclick="Admin.toast('Account updated!','success')">Update Account</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /admin-app -->
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="product-modal-title">Add Product</h3>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="Admin.closeModal('product-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="product-modal-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Product Name *</label>
+          <input type="text" id="pm-name" placeholder="e.g. Pro Wireless Headphones">
+        </div>
+        <div class="form-group">
+          <label>Category *</label>
+          <select id="pm-category"></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Price * ($)</label>
+          <input type="number" id="pm-price" placeholder="99.99" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label>Original Price ($)</label>
+          <input type="number" id="pm-original-price" placeholder="149.99" step="0.01" min="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Stock Quantity *</label>
+          <input type="number" id="pm-stock" placeholder="50" min="0">
+        </div>
+        <div class="form-group">
+          <label>Badge Label</label>
+          <input type="text" id="pm-badge" placeholder="e.g. New, Sale, Best Seller">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Rating (0–5)</label>
+          <input type="number" id="pm-rating" placeholder="4.5" step="0.1" min="0" max="5">
+        </div>
+        <div class="form-group">
+          <label>Review Count</label>
+          <input type="number" id="pm-reviews" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="pm-desc" placeholder="Detailed product description…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="pm-featured" style="margin-right:6px"> Featured product (show on homepage)
+        </label>
+      </div>
+      <div class="form-group">
+        <label>Image URLs * (one per line)</label>
+        <textarea id="pm-images" placeholder="https://images.unsplash.com/…&#10;https://images.unsplash.com/…" rows="3" oninput="Sections._updateImgPreviews()"></textarea>
+        <div style="font-size:0.75rem;color:var(--text-3);margin-top:4px">Paste image URLs, one per line. Use Unsplash URLs for best results.</div>
+      </div>
+      <div class="img-preview-grid" id="pm-img-previews"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="Admin.closeModal('product-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="Sections._saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY MODAL -->
+<div class="modal-overlay" id="category-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="cat-modal-title">Add Category</h3>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="Admin.closeModal('category-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="cat-modal-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category Name *</label>
+          <input type="text" id="cm-name" placeholder="e.g. Electronics">
+        </div>
+        <div class="form-group">
+          <label>Slug</label>
+          <input type="text" id="cm-slug" placeholder="auto-generated">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Icon (Emoji)</label>
+          <input type="text" id="cm-icon" placeholder="⚡" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input type="text" id="cm-desc" placeholder="Short description">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="Admin.closeModal('category-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="Sections._saveCat()">Save Category</button>
+    </div>
+  </div>
+</div>
+
+<!-- USER MODAL -->
+<div class="modal-overlay" id="user-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="user-modal-title">Add User</h3>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="Admin.closeModal('user-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="user-modal-id">
+      <div class="form-group"><label>Full Name *</label><input type="text" id="um-name" placeholder="Jane Cooper"></div>
+      <div class="form-group"><label>Email Address *</label><input type="email" id="um-email" placeholder="jane@example.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="um-password" placeholder="Leave blank to keep existing"></div>
+      <div class="form-group">
+        <label>Role</label>
+        <select id="um-role">
+          <option value="customer">Customer</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="Admin.closeModal('user-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="Sections._saveUser()">Save User</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="modal-overlay" id="order-detail-modal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <h3>Order Details</h3>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="Admin.closeModal('order-detail-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="order-detail-content"><!-- Injected --></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="Admin.closeModal('order-detail-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+  // Update pending badge
+  function updatePendingBadge() {
+    const count = (JSON.parse(localStorage.getItem('db_orders') || '[]')).filter(o => o.status === 'pending').length;
+    const el = document.getElementById('pending-count');
+    if (el) { el.textContent = count; el.style.display = count > 0 ? '' : 'none'; }
+  }
+  setInterval(updatePendingBadge, 2000);
+</script>
+<script src="../js/database.js"></script>
+<script src="js/admin.js"></script>
+<script>updatePendingBadge();</script>
+</body>
+</html>
